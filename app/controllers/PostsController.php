@@ -1,5 +1,8 @@
 <?php
   class PostsController extends Controller {
+    private $postModel;
+    private $userModel;
+
     public function __construct(){
       if(!isLoggedIn()){
         redirect('users/login');
@@ -67,7 +70,7 @@
         if(empty($data['title_err']) && empty($data['body_err'])){
           // Validated
           if($this->postModel->addPost($data)){
-            flash('post_message', 'PostModel Added');
+            flash('post_message', 'Post added');
             redirect('posts');
           } else {
             die('Something went wrong');
@@ -88,7 +91,7 @@
     }
 
     public function edit($id){
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if(isPost()){
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
@@ -113,7 +116,7 @@
         if(empty($data['title_err']) && empty($data['body_err'])){
           // Validated
           if($this->postModel->updatePost($data)){
-            flash('post_message', 'PostModel Updated');
+            flash('post_message', 'Post updated');
             redirect('posts');
           } else {
             die('Something went wrong');
@@ -155,7 +158,7 @@
     }
 
     public function delete($id){
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if(isPost()){
         
         // Get existing post from model
         $post = $this->postModel->getPostById($id);

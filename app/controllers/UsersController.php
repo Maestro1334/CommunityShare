@@ -1,12 +1,14 @@
 <?php
   class UsersController extends Controller {
+    private $userModel;
+
     public function __construct(){
       $this->userModel = $this->model('UserModel');
     }
 
     public function register(){
       // Check for POST
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if(isPost()){
         // Process form
   
         // Sanitize POST data
@@ -95,7 +97,7 @@
 
     public function login(){
       // Check for POST
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if(isPost()){
         // Process form
         // Sanitize POST data
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -183,7 +185,7 @@
 
     public function resetPass(){
       // Check for POST
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if(isPost()){
         // Process form
         // Sanitize POST data
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -271,7 +273,7 @@
 
     public function editProfile(){
       // Check for POST
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if(isPost()){
         // Process form
         // Sanitize POST data
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -321,6 +323,10 @@
           // Hash Password
           $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
+          // Update user session
+          $_SESSION['user_name'] = $data['name'];
+          $_SESSION['user_email'] = $data['email'];
+
           // Edit profile
           if($this->userModel->editProfile($data)){
             flash('register_success', 'Your profile has been updated');
@@ -328,10 +334,6 @@
           } else {
             die('Something went wrong');
           }
-
-          // Update user session
-          $_SESSION['user_name'] = $data['name'];
-          $_SESSION['user_email'] = $data['email'];
 
         } else {
           // Load view with errors
