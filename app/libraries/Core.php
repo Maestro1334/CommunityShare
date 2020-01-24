@@ -6,7 +6,7 @@
    */
   class Core {
     // Set Defaults
-    protected $currentController = 'Pages'; // Default controller
+    protected $currentController = 'PagesController'; // Default controller
     protected $currentMethod = 'index'; // Default method
     protected $params = []; // Set initial empty params array
 
@@ -15,11 +15,13 @@
       $url = $this->getUrl();
 
       // Look in controllers folder for controller
-      if (file_exists('../app/controllers/' . ucwords($url[0]) . 'Controller.php')) {
-        // If exists, set as controller
-        $this->currentController = ucwords($url[0]) . 'Controller';
-        // Unset 0 index
-        unset($url[0]);
+      if (isset($url)) {
+        if (file_exists('../app/controllers/' . ucwords($url[0]) . 'Controller.php')) {
+          // If exists, set as controller
+          $this->currentController = ucwords($url[0]) . 'Controller';
+          // Unset 0 index
+          unset($url[0]);
+        }
       }
 
       // Require the current controller
