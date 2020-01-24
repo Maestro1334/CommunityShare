@@ -14,24 +14,25 @@
 
       $url = $this->getUrl();
 
-      // Look in controllers for first value
-      if(file_exists('../app/controllers/' . ucwords($url[0]). '.php')){
+      // Look in controllers folder for controller
+      if (file_exists('../app/controllers/' . ucwords($url[0]) . 'Controller.php')) {
         // If exists, set as controller
-        $this->currentController = ucwords($url[0]);
-        // Unset 0 Index
+        $this->currentController = ucwords($url[0]) . 'Controller';
+        // Unset 0 index
         unset($url[0]);
       }
 
-      // Require the controller
-      require_once '../app/controllers/'. $this->currentController . '.php';
+      // Require the current controller
+      require_once('../app/controllers/' . $this->currentController . '.php');
 
-      // Instantiate controller class
+      // Instantiate the current controller
       $this->currentController = new $this->currentController;
 
-      // Check for second part of url
-      if(isset($url[1])){
-        // Check to see if method exists in controller
-        if(method_exists($this->currentController, $url[1])){
+      // Check if second part of url is set (method)
+      if (isset($url[1])) {
+        // Check if method/function exists in current controller class
+        if (method_exists($this->currentController, $url[1])) {
+          // Set current method if it exists
           $this->currentMethod = $url[1];
           // Unset 1 index
           unset($url[1]);

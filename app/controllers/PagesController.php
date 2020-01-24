@@ -1,5 +1,5 @@
 <?php
-  class Pages extends Controller {
+  class PagesController extends Controller {
     public function __construct(){
      
     }

@@ -52,6 +52,7 @@
       <workItem from="1579715937018" duration="91000" />
       <workItem from="1579716047960" duration="1517000" />
       <workItem from="1579873596735" duration="924000" />
+      <workItem from="1579875494972" duration="732000" />
     </task>
     <servers />
   </component>
@@ -59,6 +60,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="443" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1579876388525">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="443" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1579876388525" />
     <state x="591" y="302" key="com.intellij.ide.util.TipDialog" timestamp="1579873613035">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
