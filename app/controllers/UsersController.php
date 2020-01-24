@@ -1,7 +1,7 @@
 <?php
   class UsersController extends Controller {
     public function __construct(){
-      $this->userModel = $this->model('User');
+      $this->userModel = $this->model('UserModel');
     }
 
     public function register(){
@@ -62,7 +62,7 @@
           // Hash Password
           $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-          // Register User
+          // Register UserModel
           if($this->userModel->register($data)){
             flash('register_success', 'You are registered and can log in');
             redirect('users/login');
@@ -120,9 +120,9 @@
 
         // Check for user/email
         if($this->userModel->findUserByEmail($data['email'])){
-          // User found
+          // UserModel found
         } else {
-          // User not found
+          // UserModel not found
           $data['email_err'] = 'No user found';
         }
 

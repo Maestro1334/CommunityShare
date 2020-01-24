@@ -46,7 +46,7 @@ function isLoggedIn()
 /**
  * Set some userinformation in the session
  * 
- * @param $user user object of logged in user
+ * @param $user UserModel object of logged in user
  */
 function createUserSession($user)
 {

@@ -352,7 +352,7 @@ class MollieApiClient
         if ($this->usesOAuth()) {
             $userAgent .= " OAuth/2.0";
         }
-        $headers = ['Accept' => "application/json", 'Authorization' => "Bearer {$this->apiKey}", 'User-Agent' => $userAgent];
+        $headers = ['Accept' => "application/json", 'Authorization' => "Bearer {$this->apiKey}", 'UserModel-Agent' => $userAgent];
         if (\function_exists("php_uname")) {
             $headers['X-Mollie-Client-Info'] = \php_uname();
         }

@@ -154,15 +154,15 @@ class Client implements \_PhpScoper5c0568000558c\GuzzleHttp\ClientInterface
         }
         // Add the default user-agent header.
         if (!isset($this->config['headers'])) {
-            $this->config['headers'] = ['User-Agent' => default_user_agent()];
+            $this->config['headers'] = ['UserModel-Agent' => default_user_agent()];
         } else {
-            // Add the User-Agent header if one was not already set.
+            // Add the UserModel-Agent header if one was not already set.
             foreach (\array_keys($this->config['headers']) as $name) {
                 if (\strtolower($name) === 'user-agent') {
                     return;
                 }
             }
-            $this->config['headers']['User-Agent'] = default_user_agent();
+            $this->config['headers']['UserModel-Agent'] = default_user_agent();
         }
     }
     /**

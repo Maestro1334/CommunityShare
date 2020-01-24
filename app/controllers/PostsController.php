@@ -5,8 +5,8 @@
         redirect('users/login');
       }
 
-      $this->postModel = $this->model('Post');
-      $this->userModel = $this->model('User');
+      $this->postModel = $this->model('PostModel');
+      $this->userModel = $this->model('UserModel');
     }
 
     public function index(){
@@ -67,7 +67,7 @@
         if(empty($data['title_err']) && empty($data['body_err'])){
           // Validated
           if($this->postModel->addPost($data)){
-            flash('post_message', 'Post Added');
+            flash('post_message', 'PostModel Added');
             redirect('posts');
           } else {
             die('Something went wrong');
@@ -113,7 +113,7 @@
         if(empty($data['title_err']) && empty($data['body_err'])){
           // Validated
           if($this->postModel->updatePost($data)){
-            flash('post_message', 'Post Updated');
+            flash('post_message', 'PostModel Updated');
             redirect('posts');
           } else {
             die('Something went wrong');
@@ -165,7 +165,7 @@
           redirect('posts');
         }
         if($this->postModel->deletePost($id)){
-          flash('post_message', 'Post Removed');
+          flash('post_message', 'PostModel Removed');
           redirect('posts');
         } else {
           die('Something went wrong');

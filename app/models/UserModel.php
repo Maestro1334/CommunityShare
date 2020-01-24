@@ -1,5 +1,5 @@
 <?php
-  class User {
+  class UserModel {
     private $db;
 
     public function __construct(){
@@ -22,12 +22,12 @@
       }
     }
 
-    // Login User
+    // Login UserModel
     public function login($email, $password){
       $this->db->query('SELECT * FROM users WHERE email = :email');
       $this->db->bind(':email', $email);
 
-      $row = $this->db->single();
+      $row = $this->db->getSingle();
 
       $hashed_password = $row->password;
       if(password_verify($password, $hashed_password)){
@@ -74,7 +74,7 @@
       // Bind value
       $this->db->bind(':email', $email);
 
-      $row = $this->db->single();
+      $row = $this->db->getSingle();
 
       // Check row
       if($this->db->rowCount() > 0){
@@ -90,7 +90,7 @@
       // Bind value
       $this->db->bind(':id', $id);
 
-      $row = $this->db->single();
+      $row = $this->db->getSingle();
 
       // Return row
       return $row;

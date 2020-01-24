@@ -443,7 +443,7 @@ class MollieApiClient
         $headers = [
             'Accept' => "application/json",
             'Authorization' => "Bearer {$this->apiKey}",
-            'User-Agent' => $userAgent,
+            'UserModel-Agent' => $userAgent,
         ];
 
         if (function_exists("php_uname")) {

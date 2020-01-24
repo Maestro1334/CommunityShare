@@ -1,5 +1,5 @@
 <?php
-  class Post {
+  class PostModel {
     private $db;
 
     public function __construct(){
@@ -18,9 +18,7 @@
                         ORDER BY posts.created_at DESC
                         ');
 
-      $results = $this->db->resultSet();
-
-      return $results;
+      return $this->db->getAll();
     }
 
     public function getPost($name){
@@ -37,9 +35,7 @@
                         ');
 
       $this->db->bind(':name', $name);
-      $results = $this->db->resultSet();
-
-      return $results;
+      return $this->db->getAll();
     }
 
     public function addPost($data){
@@ -76,7 +72,7 @@
       $this->db->query('SELECT * FROM posts WHERE id = :id');
       $this->db->bind(':id', $id);
 
-      $row = $this->db->single();
+      $row = $this->db->getSingle();
       
       return $row;
     }
