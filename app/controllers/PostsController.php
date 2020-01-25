@@ -46,7 +46,7 @@
     } 
     
     public function add(){
-      if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if(isPost()){
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
@@ -54,8 +54,10 @@
           'title' => trim($_POST['title']),
           'body' => trim($_POST['body']),
           'user_id' => $_SESSION['user_id'],
+          'images' => $_FILES['images'],
           'title_err' => '',
-          'body_err' => ''
+          'body_err' => '',
+          'image_err' => ''
         ];
 
         // Validate data
@@ -66,9 +68,40 @@
           $data['body_err'] = 'Please enter body text';
         }
 
+        // Check for and display errors uploading images
+        if (isset($_FILES['images']['error'])){
+          $message = '';
+          foreach($_FILES['images']['error'] as $err) {
+            switch ($err) {
+              case 1:
+                $message .= "The uploaded file exceeds the upload_max_filesize directive in php.ini. ";
+                break;
+              case 2:
+                $message .= "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form. ";
+                break;
+              case 3:
+                $message .= "The uploaded file was only partially uploaded. ";
+                break;
+              case 5:
+                $message .= "Missing a temporary folder. ";
+                break;
+              case 6:
+                $message .= "Failed to write file to disk. ";
+                break;
+              case 7:
+                $message .= "File upload stopped by extension";
+                break;
+            }
+          }
+          $data['images_err'] = $message;
+        }
+
         // Make sure no errors
-        if(empty($data['title_err']) && empty($data['body_err'])){
+        if(empty($data['title_err']) && empty($data['body_err']) && empty($data['images_err'])){
           // Validated
+          // Save and rotate uploaded images
+          $data['filenames'] = saveImages($data, $data['images_err']);
+          // Add post to the database
           if($this->postModel->addPost($data)){
             flash('post_message', 'Post added');
             redirect('posts');

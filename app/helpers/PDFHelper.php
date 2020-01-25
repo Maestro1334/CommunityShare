@@ -7,7 +7,7 @@
  * @param $total int total price of order
  * @param $order object order details
  */
-function createPDFInvoice(string $location, array $tickets, int $total, $order){
+function createPDFContact(string $location, array $tickets, int $total, $order){
     $pdf = new FPDF();
     $pdf->AddPage();
     $pdf->SetFont('Arial','B',20);

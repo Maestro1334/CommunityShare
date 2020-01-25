@@ -1,45 +1,75 @@
 <?php
 /**
- * Save an image and return the file name
+ * Save image(s) and return the file name(s)
  * 
- * @param $image The image opbject from the posted form
- * @param $error A place to store errors if they occur
+ * @param $data array that holds the image data
+ * @param $error variable to store errors if they occur
  * 
- * @return $filename or false if an error occured
+ * @return array of $filenames or false if an error occured
  */
-function saveImage($image, &$error)
+function saveImages($data, &$error)
 {
-  $filename = basename($image['name']);
-  $targetFile = FILE_UPLOAD . $filename;
-  $fileSize = $image['size'];
-  $imageType = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-  $check = getimagesize($image['tmp_name']);
-  if ($check !== false) {
-    // It's a real image
-    while(file_exists($targetFile)){
-      // rename the image if there already is an image with this name
-      $filename = pathinfo($image['name'], PATHINFO_FILENAME) . bin2hex(random_bytes(2)) . '.'. $imageType;
-      $targetFile = FILE_UPLOAD . $filename;
-    }
+  $filenames = [];
+  for ($i = 0; $i < count($data['images']['tmp_name']); $i++) {
+    $filename = $data['images']['name'][$i];
+    $file_size = $data['images']['size'][$i];
+    $file_tmp = $data['images']['tmp_name'][$i];
+    $targetFile = FILE_UPLOAD . $filename;
+    $imageType = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    $isImage = getimagesize($data['images']['tmp_name'][$i]);
 
-    $allowedFiles = array('jpg', 'png', 'jpeg', 'gif');
-    if (in_array($imageType, $allowedFiles)) {
-      if($fileSize <= MAX_IMAGE_UPLOAD){
-        if(move_uploaded_file($image['tmp_name'], $targetFile)){
-          return $filename;
-        }
-        $error = 'There went something wrong while updating';
-      } else {
-        $error = 'The file is to large. It has to be less than or equal to ' . (MAX_IMAGE_UPLOAD / 1000000) . 'MB';
+    if ($isImage !== false) {
+      // It is an image
+      while (file_exists($targetFile)) {
+        // rename the image if there already is an image with this name
+        $filename = pathinfo($data['images']['name'][$i], PATHINFO_FILENAME) . bin2hex(random_bytes(2)) . '.' . $imageType;
+        $targetFile = FILE_UPLOAD . $filename;
       }
+
+      $allowedFiles = array('jpg', 'png', 'jpeg', 'gif');
+      if (in_array($imageType, $allowedFiles)) {
+        // FIle type is allowed
+        if ($file_size <= MAX_IMAGE_UPLOAD) {
+          // Image size is allowed
+
+          // load the image
+          if($imageType == "jpg" or $imageType == "jpeg"){
+            $original_image = imagecreatefromjpeg($file_tmp);
+          }
+          else if($imageType == "gif"){
+            $original_image = imagecreatefromgif($file_tmp);
+          }
+          else if($imageType == "png"){
+            $original_image = imagecreatefrompng($file_tmp);
+          }
+
+          // Generate rotated image
+          $rotated_image = imagerotate($original_image, 45, 0);
+
+          // Store the rotated image
+          if($imageType == "jpg" or $imageType == "jpeg"){
+            imagejpeg($rotated_image, $targetFile);
+          }
+          else if($imageType == "gif"){
+            imagegif($rotated_image, $targetFile);
+          }
+          else if($imageType == "png"){
+            imagepng($rotated_image, $targetFile);
+          }
+
+          $filenames[] = $filename;
+
+        } else {
+          $error = 'The image is too large. It has to be less than or equal to ' . (MAX_IMAGE_UPLOAD / 1000000) . 'MB';
+          }
+      } else {
+        $error = 'This file type is not supported. Only JPG, JPEG, PNG & GIF file types are allowed';
+        }
     } else {
-      $error = 'This file type is not supported. Only JPG, JPEG, PNG & GIF files are allowed';
+      $error = 'This file is not an image';
+      }
     }
-  } else {
-    $error = 'This file is not an image';
-  }
-  die($error);
-  return false;
+  return $filenames;
 }
 
 /**
