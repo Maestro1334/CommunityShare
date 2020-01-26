@@ -10,6 +10,7 @@
 
       $this->postModel = $this->model('PostModel');
       $this->userModel = $this->model('UserModel');
+
     }
 
     public function index(){
@@ -20,6 +21,13 @@
         'posts' => $posts
       ];
 
+      // Loads CSS into the view
+      $this->addCSS('posts.css');
+
+      // Loads JavaScript onto page
+      $this->addJs('main.js');
+
+      // Load the view
       $this->view('posts/index', $data);
     }
 
@@ -201,7 +209,7 @@
           redirect('posts');
         }
         if($this->postModel->deletePost($id)){
-          flash('post_message', 'PostModel Removed');
+          flash('post_message', 'Post removed');
           redirect('posts');
         } else {
           die('Something went wrong');

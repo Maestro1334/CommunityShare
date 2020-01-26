@@ -7,11 +7,15 @@
     }
 
     public function getPosts(){
-      $this->db->query('SELECT *,
+      $this->db->query('SELECT
                         posts.id as postId,
                         users.id as userId,
+                        posts.title as title,
+                        users.name as name,
+                        posts.body as body,
                         posts.created_at as postCreated,
-                        users.created_at as userCreated
+                        users.created_at as userCreated,
+                        (SELECT GROUP_CONCAT(i.file_name) FROM images i WHERE post_id = posts.id) AS filenames
                         FROM posts
                         INNER JOIN users
                         ON posts.user_id = users.id
@@ -22,11 +26,15 @@
     }
 
     public function getPost($name){
-      $this->db->query('SELECT *,
+      $this->db->query('SELECT
                         posts.id as postId,
                         users.id as userId,
+                        posts.title as title,
+                        users.name as name,
+                        posts.body as body,
                         posts.created_at as postCreated,
-                        users.created_at as userCreated
+                        users.created_at as userCreated,
+                        (SELECT GROUP_CONCAT(i.file_name) FROM images i WHERE post_id = posts.id) AS filenames
                         FROM posts
                         INNER JOIN users
                         ON posts.user_id = users.id
@@ -44,6 +52,27 @@
       $this->db->bind(':title', $data['title']);
       $this->db->bind(':user_id', $data['user_id']);
       $this->db->bind(':body', $data['body']);
+
+      // Execute
+      if($this->db->execute()){
+        $postId = $this->db->lastInsertId();
+        if (isset($data['filenames'])) {
+          foreach($data['filenames'] as $filename) {
+            $this->addImage($data, $filename, $postId);
+          }
+        }
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function addImage($data, $filename, $postId) {
+      $this->db->query('INSERT INTO images (file_name, user_id, post_id) VALUES(:filename, :user_id, :post_id)');
+      // Bind values
+      $this->db->bind(':filename', $filename);
+      $this->db->bind(':user_id', $data['user_id']);
+      $this->db->bind(':post_id', $postId);
 
       // Execute
       if($this->db->execute()){
@@ -78,7 +107,8 @@
     }
 
     public function deletePost($id){
-      $this->db->query('DELETE FROM posts WHERE id = :id');
+      $this->db->query('DELETE FROM posts WHERE id = :id;
+                              DELETE FROM images WHERE post_id = :id');
       // Bind values
       $this->db->bind(':id', $id);
 
