@@ -67,7 +67,7 @@
       }
     }
 
-    public function addImage($data, $filename, $postId) {
+    private function addImage($data, $filename, $postId) {
       $this->db->query('INSERT INTO images (file_name, user_id, post_id) VALUES(:filename, :user_id, :post_id)');
       // Bind values
       $this->db->bind(':filename', $filename);
@@ -111,6 +111,24 @@
                               DELETE FROM images WHERE post_id = :id');
       // Bind values
       $this->db->bind(':id', $id);
+
+      // Execute
+      if($this->db->execute()){
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function getAllImages() {
+      $this->db->query('SELECT file_name as filename FROM images');
+
+      // Execute
+      return $this->db->getAll();
+    }
+
+    public function removeAllImages() {
+      $this->db->query('DELETE * FROM images');
 
       // Execute
       if($this->db->execute()){
