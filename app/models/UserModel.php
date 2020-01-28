@@ -95,4 +95,45 @@
       // Return row
       return $row;
     }
+
+    public function getUserIdByEmail($email){
+      $this->db->query("SELECT id FROM users WHERE email = :email");
+      $this->db->bind(':email', $email);
+      try {
+        $result = $this->db->getSingle();
+        return $result->id;
+      } catch (\Throwable $th) {
+        return null;
+      }
+    }
+
+    public function createPasswordReset($user_id, $token){
+      // Delete previous tokens before saving a new one
+      try {
+        $this->deletePasswordResetToken($user_id);
+      } catch (Throwable $th) {
+        throw $th;
+      }
+      $this->db->query("INSERT INTO pass_reset_token (user_id, expire_date, token) VALUES (:user_id, :expire_date, :token)");
+      $expire_date = new DateTime();
+      $expire_date->add(new DateInterval('PT12H'));
+      $this->db->bind(':user_id', $user_id);
+      $this->db->bind(':expire_date', $expire_date->format('Y-m-d H:i:s'));
+      $this->db->bind(':token', $token);
+      try {
+        $this->db->execute();
+      } catch (Throwable $th) {
+        throw new Exception('Creating the password token failed: ' . $th->getMessage());
+      }
+    }
+
+    public function deletePasswordResetToken($user_id){
+      $this->db->query("DELETE FROM pass_reset_token WHERE user_id = :user_id");
+      $this->db->bind(':user_id', $user_id);
+      try {
+        $this->db->execute();
+      } catch (Throwable $th) {
+        throw new Exception('Deleting the password token failed: ' . $th->getMessage());
+      }
+    }
   }

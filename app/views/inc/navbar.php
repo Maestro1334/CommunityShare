@@ -22,7 +22,7 @@
             <a class="nav-link">Welcome <?php echo $_SESSION['user_name']; ?></a>
           </li>
           <li class="nav-item">
-            <button class="btn btn-md btn-success" type="submit">Donate</button>
+            <button class="btn btn-md btn-success" type="">Donate</button>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="<?php echo URLROOT; ?>/users/profile">Profile</a>

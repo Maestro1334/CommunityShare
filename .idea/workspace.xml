@@ -24,6 +24,9 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\CommunityShare\app\libraries" />
+      <recent name="C:\xampp\htdocs\CommunityShare\app\libraries\PHPMailer" />
+      <recent name="C:\xampp\htdocs\CommunityShare\app\views\users" />
       <recent name="C:\xampp\htdocs\CommunityShare\app\cron" />
     </key>
   </component>
@@ -63,7 +66,7 @@
       <workItem from="1580041336601" duration="16888000" />
       <workItem from="1580067580288" duration="237000" />
       <workItem from="1580221449784" duration="1847000" />
-      <workItem from="1580223368591" duration="7513000" />
+      <workItem from="1580223368591" duration="17826000" />
     </task>
     <servers />
   </component>

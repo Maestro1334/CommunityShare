@@ -21,9 +21,6 @@
         'posts' => $posts
       ];
 
-      // Loads JavaScript onto page
-      $this->addJs('main.js');
-
       // Load the view
       $this->view('posts/index', $data);
     }

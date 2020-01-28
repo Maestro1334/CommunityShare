@@ -18,7 +18,7 @@
           </div>
           <div class="row">
             <div class="col mb-3">
-              <a href="<?php echo URLROOT; ?>/users/resetpass" class="btn-link">Forgot password?</a>
+              <a href="<?php echo URLROOT; ?>/users/forgotpass" class="btn-link">Forgot password?</a>
             </div>
           </div>
           <div class="row">
