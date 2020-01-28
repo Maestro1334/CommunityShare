@@ -21,9 +21,6 @@
         'posts' => $posts
       ];
 
-      // Loads CSS into the view
-      $this->addCSS('posts.css');
-
       // Loads JavaScript onto page
       $this->addJs('main.js');
 
