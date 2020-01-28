@@ -220,7 +220,7 @@
                       'basbrak123@gmail.com',
                       'CommunityShare',
                       'Reset password',
-                      'Hi, here is a link to reset your password.<br/><a href="' . URLROOT . '/user/resetpass/' . $resetToken . '">Click here</a> to continue.');
+                      'Hi, here is a link to reset your password.<br/><a href="' . URLROOT . '/users/resetpass/' . $resetToken . '">Click here</a> to continue.');
                     flash('forgot_password_message', 'A reset password email has been sent');
                   } catch (\Throwable $th) {
                     flash('forgot_password_message', $th, 'alert alert-danger');
@@ -243,83 +243,70 @@
       $this->view('users/forgotpass', $data);
     }
 
-//    public function forgotPass(){
-//      // Check for POST
-//      if(isPost()){
-//        // Process form
-//        // Sanitize POST data
-//        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-//
-//        // Init data
-//        $data =[
-//          'email' => trim($_POST['email']),
-//          'password' => trim($_POST['password']),
-//          'confirm_password' => trim($_POST['confirm_password']),
-//          'email_err' => '',
-//          'password_err' => '',
-//          'confirm_password_err' => ''
-//        ];
-//
-//        // Validate Email
-//        if(empty($data['email'])){
-//          $data['email_err'] = 'Please enter email';
-//        } else {
-//          // Check for existing email
-//          if(!$this->userModel->findUserByEmail($data['email'])){
-//            $data['email_err'] = 'No user found';
-//          }
-//        }
-//
-//        // Validate Password
-//        if(empty($data['password'])){
-//          $data['password_err'] = 'Please enter password';
-//        } elseif(strlen($data['password']) < 6){
-//          $data['password_err'] = 'Password must be at least 6 characters';
-//        }
-//
-//        // Validate Confirm Password
-//        if(empty($data['confirm_password'])){
-//          $data['confirm_password_err'] = 'Please confirm password';
-//        } else {
-//          if($data['password'] != $data['confirm_password']){
-//            $data['confirm_password_err'] = 'Passwords do not match';
-//          }
-//        }
-//
-//        // Make sure errors are empty
-//        if(empty($data['email_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])){
-//          // Validated
-//
-//          // Hash Password
-//          $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
-//
-//          // Reset password
-//          if($this->userModel->resetPass($data)){
-//            flash('register_success', 'Your password has been changed and you can log in');
-//            redirect('users/login');
-//          } else {
-//            die('Something went wrong');
-//          }
-//
-//        } else {
-//          // Load view with errors
-//          $this->view('users/resetpass', $data);
-//        }
-//      } else {
-//        // Init data
-//        $data =[
-//          'email' => '',
-//          'password' => '',
-//          'confirm_password' => '',
-//          'email_err' => '',
-//          'password_err' => '',
-//          'confirm_password_err' => ''
-//        ];
-//
-//        // Load view
-//        $this->view('users/resetpass', $data);
-//      }
-//    }
+    public function resetPass($token = null)
+    {
+      $data = [
+        'password' => '',
+        'password_err' => '',
+        'confirm_password' => '',
+        'confirm_password_err' => '',
+        'token' => $token,
+        'token_err' => ''
+      ];
+
+      if (isPost()) {
+        // Post request
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data['password'] = $_POST['password'];
+        $data['confirm_password'] = $_POST['confirm_password'];
+        $data['token'] = $_POST['token'];
+
+        // Validate Password
+        if(empty($data['password'])){
+          $data['password_err'] = 'Please enter password';
+        } elseif(strlen($data['password']) < 6){
+          $data['password_err'] = 'Password must be at least 6 characters';
+        }
+
+        // Validate Confirm Password
+        if(empty($data['confirm_password'])){
+          $data['confirm_password_err'] = 'Please confirm password';
+        } else {
+          if($data['password'] != $data['confirm_password']){
+            $data['confirm_password_err'] = 'Passwords do not match';
+          }
+        }
+
+        if (empty($data['password_err']) && empty($data['confirm_password_err'])) {
+          // Validated
+          $userId = $this->userModel->getUserIdByToken($data['token']);
+          if (isset($userId)) {
+            // A user with this ID requested a password reset
+            try {
+              // Hash Password
+              $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+              $this->userModel->setNewPasswordFromReset($data['password'], $data['token']);
+              flash('register_success', 'Your password has been changed. You can now log in');
+              redirect('users/login');
+            } catch (\Throwable $th) {
+              flash('token_message', 'Something went wrong updating the password. Contact an administrator', 'alert alert-danger');
+            }
+          } else {
+            // No user returned. Token is invalid. Redirect the user
+            flash('forgot_password_message', 'The token is invalid. Please fill this form again', 'alert alert-danger');
+            redirect('users/forgotpass');
+          }
+        }
+        $this->view('users/resetpass', $data);
+      }
+      // Get request
+      if (!$token) {
+        $data['token_err'] = 'No reset token has been given. Please retry the link in your mail';
+        flash('token_message', $data['token_err'], 'alert alert-danger');
+      }
+      $this->view('users/resetpass', $data);
+    }
 
     public function profile(){
       $user = $this->userModel->getUserById($_SESSION['user_id']);

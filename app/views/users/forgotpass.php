@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
   <div class="card card-body bg-light mt-5">
     <div class="row">
-      <div class="col-md-6 mx-auto">
+      <div class="col-md-4 mx-auto">
         <div class="card-heading">
           <h2 class="card-title">Forgot password</h2>
         </div>
