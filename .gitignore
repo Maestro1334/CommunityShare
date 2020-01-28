@@ -9,9 +9,6 @@
 public/pdf/
 public/img/uploads/
 
-#ignore the config php
-app/config/config.php
-
 #ignore IDEA files
 .DS_Store
 .idea
