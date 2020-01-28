@@ -1,3 +1,13 @@
 .nav-item {
   margin: 5px;
 }
+
+.reset-password-container {
+  margin: auto;
+  height: 400px;
+  width: 500px;
+}
+
+.reset-password-card {
+  margin:auto;
+}
