@@ -5,8 +5,6 @@
   // Load Helpers
   require_once 'helpers/SessionHelper.php';
   require_once 'helpers/UrlHelper.php';
-  require_once 'helpers/ValidationHelper.php';
-  require_once 'helpers/MailHelper.php';
   require_once 'helpers/FileHelper.php';
   require_once 'helpers/PDFHelper.php';
 

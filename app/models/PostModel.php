@@ -128,7 +128,7 @@
     }
 
     public function removeAllImages() {
-      $this->db->query('DELETE * FROM images');
+      $this->db->query('DELETE FROM images');
 
       // Execute
       if($this->db->execute()){

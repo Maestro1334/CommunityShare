@@ -72,32 +72,3 @@ function removeUserSession()
 function getUserId(){
   return (isset($_SESSION['user_id'])) ? $_SESSION['user_id'] : false;
 }
-
-/**
- * Set the password reset token in the session
- * 
- * @param string $token Token to set
- */
-function createResetTokenSession($token)
-{
-  $_SESSION['reset_token'] = $token;
-}
-
-/**
- * Get the reset token from session
- * 
- * @return token or bool false if none is set
- */
-function getResetToken()
-{
-  return (isset($_SESSION['reset_token'])) ? $_SESSION['reset_token'] : false;
-}
-
-/**
- * Remove the reset token from the session
- */
-function removeResetTokenSession()
-{
-  unset($_SESSION['reset_token']);
-}
-?>

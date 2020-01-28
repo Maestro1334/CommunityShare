@@ -5,6 +5,10 @@
 !.vscode/extensions.json
 *.code-workspace
 
+#ignore pdf and upload folders
+public/pdf/
+public/img/uploads/
+
 #ignore the config php
 app/config/config.php
 
