@@ -1,18 +1,17 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-  <div class="card card-body bg-light mt-5 reset-password-container">
-    <div class="col-md-8 mx-auto reset-password-card">
-      <div class="card-heading">
-        <h2 class="card-title forgot-password-title">Forgot password</h2>
-      </div>
-      <?php flash('forgot_password_message'); ?>
-      <div class="row card-body">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <div class="card card-body bg-light mt-5">
+        <?php flash('forgot_password_message'); ?>
+        <h2>Forgot password</h2>
+        <p>Please fill in your email to reset your password</p>
         <form action="<?php echo URLROOT; ?>/users/forgotpass" method="POST" class="user-form">
           <div class="form-group">
             <label class="label-text" for="email">E-mail address</label>
             <input type="text" name="email" class="form-control text-box <?php echo (!empty($data['email_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['email']; ?>">
             <span class="invalid-feedback"><?php echo $data['email_err']; ?></span>
           </div>
-          <div class="row">
+          <div class="form-group row">
             <div class="col-md-6">
               <input type="submit" class="btn btn-block btn-success" value="Send email">
             </div>
