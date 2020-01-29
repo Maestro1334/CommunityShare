@@ -69,6 +69,7 @@
       <workItem from="1580221449784" duration="1847000" />
       <workItem from="1580223368591" duration="22522000" />
       <workItem from="1580247127834" duration="20467000" />
+      <workItem from="1580317485085" duration="192000" />
     </task>
     <servers />
   </component>
@@ -92,10 +93,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="676" y="334" key="#com.jetbrains.php.refactoring.move.member.instance.PhpMoveInstanceMethodDialog#/0.0.1920.1040@0.0.1920.1040" timestamp="1580045756358" />
-    <state x="591" y="302" key="com.intellij.ide.util.TipDialog" timestamp="1580247151115">
+    <state x="591" y="302" key="com.intellij.ide.util.TipDialog" timestamp="1580317486004">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="591" y="302" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1580247151115" />
+    <state x="591" y="302" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1580317486004" />
     <state x="467" y="40" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1580265250796">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
