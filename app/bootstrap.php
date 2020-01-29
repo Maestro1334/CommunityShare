@@ -16,6 +16,7 @@
   require_once 'libraries/qrcode/qrcode.class.php';
   require_once 'libraries/PHPMailer/class.smtp.php';
   require_once 'libraries/PHPMailer/class.phpmaileroauthgoogle.php';
+  require_once '../public/securimage/securimage.php';
 
   // Autoload Core Classes
   spl_autoload_register(function ($className) {

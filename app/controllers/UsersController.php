@@ -7,6 +7,7 @@
     }
 
     public function register(){
+      $captcha = new Securimage();
       // Check for POST
       if(isPost()){
         // Process form
@@ -20,10 +21,12 @@
           'email' => trim($_POST['email']),
           'password' => trim($_POST['password']),
           'confirm_password' => trim($_POST['confirm_password']),
+          'captcha' => trim($_POST['captcha_code']),
           'name_err' => '',
           'email_err' => '',
           'password_err' => '',
-          'confirm_password_err' => ''
+          'confirm_password_err' => '',
+          'captcha_err' => ''
         ];
 
         // Validate Email
@@ -57,8 +60,13 @@
           }
         }
 
+        // Validate CAPTCHA code
+        if ($captcha->check($_POST['captcha_code']) == false) {
+          $data['captcha_err'] = 'Captcha code incorrect';
+        }
+
         // Make sure errors are empty
-        if(empty($data['email_err']) && empty($data['name_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])){
+        if(empty($data['email_err']) && empty($data['name_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['captcha_err'])){
           // Validated
           
           // Hash Password
@@ -84,10 +92,12 @@
           'email' => '',
           'password' => '',
           'confirm_password' => '',
+          'captcha' => '',
           'name_err' => '',
           'email_err' => '',
           'password_err' => '',
-          'confirm_password_err' => ''
+          'confirm_password_err' => '',
+          'captcha_err' => ''
         ];
 
         // Load view
@@ -121,9 +131,7 @@
         }
 
         // Check for user/email
-        if($this->userModel->findUserByEmail($data['email'])){
-          // UserModel found
-        } else {
+        if(!$this->userModel->findUserByEmail($data['email'])){
           // UserModel not found
           $data['email_err'] = 'No user found';
         }
@@ -280,15 +288,21 @@
 
         if (empty($data['password_err']) && empty($data['confirm_password_err'])) {
           // Validated
+
           $userId = $this->userModel->getUserIdByToken($data['token']);
+
           if (isset($userId)) {
             // A user with this ID requested a password reset
+
             try {
               // Hash Password
               $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+              // Set the new password
               $this->userModel->setNewPasswordFromReset($data['password'], $data['token']);
+
               flash('register_success', 'Your password has been changed. You can now log in');
               redirect('users/login');
+
             } catch (\Throwable $th) {
               flash('token_message', 'Something went wrong updating the password. Contact an administrator', 'alert alert-danger');
             }
@@ -345,7 +359,11 @@
         // Validate Email
         if(empty($data['email'])){
           $data['email_err'] = 'Please enter email';
-        } 
+        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+          $data['email_err'] = 'This is not a valid email address';
+        } elseif($this->userModel->findUserByEmail($data['email'])){
+            $data['email_err'] = 'Email is already in use for a different account';
+          }
         
         // Validate Password
         if(empty($data['password'])){
@@ -370,12 +388,22 @@
           // Hash Password
           $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-          // Update user session
-          $_SESSION['user_name'] = $data['name'];
-          $_SESSION['user_email'] = $data['email'];
-
           // Edit profile
           if($this->userModel->editProfile($data)){
+            // Send confirmation emails
+            sendEmail($_SESSION['user_email'],
+              'basbrak123@gmail.com',
+              'CommunityShare',
+              'Account updated',
+              'Hi, your account has been updated. A new email-address has been set for this account. Please use the new email-address to log in.');
+            sendEmail($data['email'],
+              'basbrak123@gmail.com',
+              'CommunityShare',
+              'Account updated',
+              'Hi, your account has been updated. You can now log in with this email-address.');
+            // Update user session
+            $_SESSION['user_name'] = $data['name'];
+            $_SESSION['user_email'] = $data['email'];
             flash('register_success', 'Your profile has been updated');
             redirect('users/profile');
           } else {
