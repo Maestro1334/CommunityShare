@@ -98,11 +98,12 @@
         }
 
         $amount = 1;
-        if(isset($_POST['custom_amount_ideal'])){
+        if($_POST['custom_amount_ideal'] >= 1){
           $amount = (int)$_POST['custom_amount_ideal'];
         } else {
           $amount = (int)$_POST['button_amount_ideal'];
         }
+        var_dump($amount);
 
         try {
           // Insert the order in the database and create a invoice PDF
@@ -140,7 +141,7 @@
         }
 
         $amount = 1;
-        if(isset($_POST['custom_amount_paypal'])){
+        if($_POST['custom_amount_paypal'] >= 1){
           $amount = (int)$_POST['custom_amount_paypal'];
         } else {
           $amount = (int)$_POST['button_amount_paypal'];
