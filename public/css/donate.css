@@ -1,0 +1,91 @@
+/** Containers **/
+.donate-container{
+  max-width: 1420px;
+  margin: auto;
+  padding-bottom: 50px;
+}
+
+/** Payment choice buttons **/
+.background-block{
+  background-color: #81d0ee;
+  height: 100%;
+}
+
+#donate-block{
+  margin-top: 50px;
+  background-color: #fff;
+  border: 1px solid #777777;
+  height: 666px;
+  width: 858px;
+}
+
+#ideal-block, #paypal-block {
+  margin-top:20px;
+  margin-left: 30px;
+}
+
+.amount-select {
+  margin-bottom: 20px;
+}
+.amount-select-buttons button {
+  margin: 20px;
+  width: 100px;
+}
+
+.amount-select-title {
+  margin-bottom: 30px;
+}
+
+#donate-block .nav{
+  padding: 0;
+}
+
+#donate-block .nav .nav-item{
+  max-height: 70px;
+}
+
+#donate-block .nav .nav-item .nav-link {
+  height: 70px;
+  border-bottom: 1px solid #797979;
+  border-radius: 0;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  font-style:normal;
+  padding: 0;
+  margin: 0;
+}
+
+#donate-block .nav .nav-item .nav-link.active {
+  background-color: #8AEEEA;
+  border: 1px solid #0EAAEA;
+}
+
+.button-amount-select:focus{
+  background:darkblue;
+}
+
+#donate-block .nav .nav-item .nav-link:hover {
+
+}
+
+/* Choice buttons*/
+#ideal-button{
+  margin-top: -4px;
+  max-height: 76px;
+  max-width: 76px;
+}
+
+#paypal-button{
+  margin-top: 15px;
+  max-height: 41px;
+  max-width: 150px;
+}
+
+.button-pay {
+  margin-top: 20px;
+}
+
+.custom-amount {
+  width: 300px;
+}

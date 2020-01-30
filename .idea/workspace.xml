@@ -21,8 +21,12 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/views/pages" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\CommunityShare\app\views\pages" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\CommunityShare\public\securimage" />
       <recent name="C:\xampp\htdocs\CommunityShare\public\captcha" />
@@ -69,7 +73,7 @@
       <workItem from="1580221449784" duration="1847000" />
       <workItem from="1580223368591" duration="22522000" />
       <workItem from="1580247127834" duration="20467000" />
-      <workItem from="1580317485085" duration="192000" />
+      <workItem from="1580317485085" duration="22132000" />
     </task>
     <servers />
   </component>
@@ -101,9 +105,13 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="467" y="40" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1580265250796" />
-    <state x="532" y="237" key="run.anything.popup" timestamp="1580230037079">
+    <state x="532" y="237" key="run.anything.popup" timestamp="1580333360067">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="532" y="237" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1580230037079" />
+    <state x="532" y="237" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1580333360067" />
+    <state x="539" y="5" width="840" height="1034" key="search.everywhere.popup" timestamp="1580346328354">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="539" y="5" width="840" height="1034" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1580346328354" />
   </component>
 </project>

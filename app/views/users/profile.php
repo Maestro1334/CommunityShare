@@ -1,4 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
+<main>
   <?php flash('register_success'); ?>
   <div class="row mb-3">
     <div class="col-md-6">
@@ -15,4 +16,5 @@
     <h4 class="card-title">Email: <?php echo $data['user']->email; ?></h4>
     <h4 class="card-title">Created At: <?php echo $data['user']->created_at; ?></h4>
   </div>
+</main>
 <?php require APPROOT . '/views/inc/footer.php'; ?>

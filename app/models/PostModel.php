@@ -98,7 +98,9 @@
     }
 
     public function getPostById($id){
-      $this->db->query('SELECT * FROM posts WHERE id = :id');
+      $this->db->query('SELECT p.id, p.user_id, p.title, p.body, p.created_at, GROUP_CONCAT(i.file_name) AS filenames 
+                              FROM posts p INNER JOIN images i ON p.id = i.post_id 
+                              WHERE p.id = :id');
       $this->db->bind(':id', $id);
 
       $row = $this->db->getSingle();

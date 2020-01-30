@@ -1,4 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
+<main>
   <div class="card card-body bg-light mt-5 reset-password-container">
     <div class="col-md-8 mx-auto reset-password-card">
       <div class="card-heading">
@@ -23,4 +24,5 @@
       </div>
     </div>
   </div>
+</main>
 <?php require APPROOT . '/views/inc/footer.php'; ?>
