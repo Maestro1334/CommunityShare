@@ -1,7 +1,9 @@
 <?php
   class PagesController extends Controller {
+    private $pageModel;
+
     public function __construct(){
-     
+      $this->pageModel = $this->model('PageModel');
     }
     
     public function index(){
@@ -35,6 +37,19 @@
       }
     }
 
+    private function createOrder($amount)
+    {
+      // Array with payment data
+      $payment = [
+        'amount' => $amount,
+        'status' => 'open'
+      ];
+
+      // Add row to donation table in the database
+      // And return payment ID
+      return $this->pageModel->addDonation($payment);
+    }
+
     /**
      * Pay the ticket with a chosen payment method
      *
@@ -51,7 +66,7 @@
       $payment = $mollie->payments->create([
         "amount" => [
           "currency" => "EUR",
-          "value" => $data['amount'],
+          "value" => strval(number_format($data['amount'], 2, ".", "")),
         ],
         "method" => $data['method'],
         "description" => $data['description'],
@@ -63,9 +78,11 @@
         "issuer" => $data['issuer']
       ]);
 
+
       // Send the customer off to complete the payment.
       header("Location: " . $payment->getCheckoutUrl(), true, 303);
     }
+
 
     public function ideal()
     {
@@ -73,19 +90,25 @@
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-        $amount = 0;
-        if(isset($_POST['custom_amount'])){
-          $amount = $_POST['custom_amount'];
+        $amount = 1;
+        if(!isset($_POST['custom_amount'])){
+          $amount = (int)$_POST['custom_amount'];
         } else {
-          $amount = $_POST['button_amount'];
+          $amount = (int)$_POST['button_amount'];
         }
-        print_r($_POST);
+
+        try {
+          // Insert the order in the database and create a invoice PDF
+          $payment_id = $this->createOrder($amount);
+        } catch (Exception $e) {
+          echo "Creating order failed: ". $e->getMessage();
+        }
         // Create mollie payment
         try {
           $data = [
             'method' => \Mollie\Api\Types\PaymentMethod::IDEAL,
-            'description' => "CommunityShare donation",
-            'id' => 6,
+            'description' => "CommunityShare donation #{$payment_id}",
+            'id' => $payment_id,
             "issuer" => !empty($_POST["issuer"]) ? $_POST["issuer"] : null,
             'amount' => $amount
           ];
@@ -131,21 +154,19 @@
     {
       try {
         $mollie = new \Mollie\Api\MollieApiClient();
-        $mollie->setApiKey("test_S5bvrqm4abfQh6efPP94eWV5PxkfGv");
+        $mollie->setApiKey("test_mfANzfRkqJEzHDvUSnp4pn6QsJ9HG4");
         $payment = $mollie->payments->get($_POST["id"]);
 
         $payment_id = $payment->metadata->order_id;
         // Update order status
-        $this->checkoutModel->updateStatus($payment_id, $payment->status);
+        $this->pageModel->updateStatus($payment_id, $payment->status);
         if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks()) {
-          // Fetch order from the database where the payment id matches
-          $order = $this->checkoutModel->getOrderPayment($payment_id);
+          // Create thank you PDF
+          /////
 
-          // Path to the invoice PDF on the server
-          $pdfWithInvoicePath = URLROOT . '/' . $order->invoice;
+          // Send the confirmation mail with PDF to the user
+          ///////
 
-          // Send the confirmation mail to the user
-          sendOrderConfirmationEmail($this->checkoutModel->getUserByPaymentId($payment_id), $pdfWithInvoicePath);
         } elseif ($payment->isOpen()) {
           $this->failedPayment($payment_id);
         } elseif ($payment->isPending()) {
@@ -170,8 +191,7 @@
 
     private function failedPayment($payment_id)
     {
-      // Payment failed, or refunded. Returning tickets to ticket pool
-      $this->checkoutModel->addStock($this->checkoutModel->getTicketsByPaymentId($payment_id));
+      // Send payment failed email
     }
 
     // Load order complete page
