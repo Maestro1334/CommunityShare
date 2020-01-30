@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 <main>
-  <div class="container-fluid completed-container">
+  <div class="container-fluid completed-container text-center">
     <h1>Thank you for your donation!</h1>
   </div>
 </main>

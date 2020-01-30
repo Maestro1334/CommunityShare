@@ -72,10 +72,13 @@
         ],
         "method" => $data['method'],
         "description" => $data['description'],
-        "redirectUrl" => URLROOT . '/pages/complete?id=' . $data['id'],
+        "redirectUrl" => URLROOT . '/pages/complete?id=' . $data['order_id'],
         "webhookUrl" => URLROOT . '/pages/webhook',
         "metadata" => [
-          "order_id" => $data['id'],
+          "order_id" => $data['order_id'],
+          "user_id" => $data['user_id'],
+          "name" => $data['name'],
+          "email" => $data['email'],
         ],
         "issuer" => $data['issuer']
       ]);
@@ -116,7 +119,10 @@
           $data = [
             'method' => \Mollie\Api\Types\PaymentMethod::IDEAL,
             'description' => "CommunityShare iDeal donation #{$payment_id}",
-            'id' => $payment_id,
+            'order_id' => $payment_id,
+            'user_id' => $_SESSION['user_id'],
+            'name' => $_SESSION['user_name'],
+            'email' => $_SESSION['user_email'],
             "issuer" => !empty($_POST["issuer"]) ? $_POST["issuer"] : null,
             'amount' => $amount
           ];
@@ -159,7 +165,9 @@
           $data = [
             'method' => \Mollie\Api\Types\PaymentMethod::PAYPAL,
             'description' => "CommunityShare paypal donation #" . $payment_id,
-            'id' => $payment_id,
+            'order_id' => $payment_id,
+            'user_id' => $_SESSION['user_id'],
+            'email' => $_SESSION['user_email'],
             "issuer" => !empty($_POST["issuer"]) ? $_POST["issuer"] : null,
             'amount' => $amount
           ];
@@ -184,7 +192,13 @@
         $this->pageModel->updateStatus($payment_id, $payment->status);
         if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks()) {
           // Donation complete
-          die('payment complete');
+          $data = [
+            'id' => $payment->metadata->user_id,
+            'name' => $payment->metadata->name,
+            'email' => $payment->metadata->email,
+          ];
+          sendDonateThankYou($data);
+
         } elseif ($payment->isOpen()) {
           $this->failedPayment($payment_id);
         } elseif ($payment->isPending()) {
@@ -215,7 +229,7 @@
         GUSER,
         SITENAME,
         $subject,
-        'Something went wrong processing your donation to CommunityShare '. $_SESSION['user_name']. '! <br> Please try again or contact me at mattismeeuwesse@gmail.com if you need any help! <br> If you cancelled your transaction on purpose, you can ignore this email.'
+        'Something went wrong processing your donation to CommunityShare '. $_SESSION['user_name']. '! <br> Please try again or contact me at ' .GUSER. ' if you need any help! <br> If you cancelled your transaction on purpose, you can ignore this email.'
       );
     }
 

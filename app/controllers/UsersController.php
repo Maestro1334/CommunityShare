@@ -6,6 +6,15 @@
       $this->userModel = $this->model('UserModel');
     }
 
+    public function index() {
+      if (isLoggedIn()){
+        redirect('users/profile');
+      }
+      else{
+        redirect('users/login');
+      }
+    }
+
     public function register(){
       $captcha = new Securimage();
       // Check for POST
@@ -177,12 +186,6 @@
       redirect('posts');
     }
 
-    // public function refreshUserSession($id){
-    //   $user = getUserById($id);
-    //   $_SESSION['user_email'] = $user->email;
-    //   $_SESSION['user_name'] = $user->name;
-    // }
-
     public function logout(){
       unset($_SESSION['user_id']);
       unset($_SESSION['user_email']);
@@ -218,7 +221,7 @@
               $userId = $this->userModel->getUserIdByEmail($data['email']);
               if (isset($userId)) {
                 // Generate token
-                $resetToken = bin2hex(random_bytes(8));
+                $resetToken = generateRandomString(10);
                 try {
                   // Store token to database
                   $this->userModel->createPasswordReset($userId, $resetToken);
@@ -230,11 +233,11 @@
                       'Reset password',
                       'Hi, here is a link to reset your password.<br/><a href="' . URLROOT . '/users/resetpass/' . $resetToken . '">Click here</a> to continue.');
                     flash('forgot_password_message', 'A reset password email has been sent');
-                  } catch (\Throwable $th) {
+                  } catch (Throwable $th) {
                     flash('forgot_password_message', $th, 'alert alert-danger');
                   }
                   $this->view('users/forgotpass', $data);
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                   //throw $th;
                   flash('forgot_password_message', $th->getMessage(), 'alert alert-danger');
                 }
@@ -392,13 +395,13 @@
           if($this->userModel->editProfile($data)){
             // Send confirmation emails
             sendEmail($_SESSION['user_email'],
-              'basbrak123@gmail.com',
-              'CommunityShare',
+              GUSER,
+              SITENAME,
               'Account updated',
               'Hi, your account has been updated. A new email-address has been set for this account. Please use the new email-address to log in.');
             sendEmail($data['email'],
-              'basbrak123@gmail.com',
-              'CommunityShare',
+              GUSER,
+              SITENAME,
               'Account updated',
               'Hi, your account has been updated. You can now log in with this email-address.');
             // Update user session

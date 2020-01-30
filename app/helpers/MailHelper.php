@@ -50,19 +50,19 @@ function sendEmail($to, $from, $from_name, $subject, $body, $attachment = null) 
   return false;
 }
 
-function sendDonateThankYou(){
+function sendDonateThankYou($data){
   // Create thank you PDF
-  $attachmentLocation = 'pdf/pdf-' . $_SESSION['user_id'] . '-' . bin2hex(random_bytes(8)) . '.pdf';
-  $qrMessage = generateRandomString(10) . '?id=' . $_SESSION['user_id'];
-  createPDFThankYou($_SESSION['user_name'], $qrMessage, $attachmentLocation);
+  $attachmentLocation = 'pdf/pdf-' . $data['id'] . '-' . generateRandomString(8) . '.pdf';
+  $qrMessage = generateRandomString(10) . '?id=' . $data['id'];
+  createPDFThankYou($data['name'], $qrMessage, $attachmentLocation);
 
   // Send the confirmation mail with PDF to the user
   $subject = 'Your donation to CommunityShare';
-  sendEmail($_SESSION['user_email'],
-    GUSER,
-    SITENAME,
+  sendEmail($data['email'],
+    'basbrak123@gmail.com',
+    'CommunityShare',
     $subject,
-    'Thank you for your donation to CommunityShare '. $_SESSION['user_name']. '! <br> Your donation will help our free website to continue to thrive :)',
+    'Thank you for your donation to CommunityShare '. $data['name']. '! <br> Your donation will help our free website to continue to thrive :)',
     $attachmentLocation
   );
 }
