@@ -88,7 +88,6 @@
 
     public function ideal()
     {
-      print_r($_POST);
       if (isPost()) {
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -99,7 +98,7 @@
         }
 
         $amount = 1;
-        if(!isset($_POST['custom_amount_ideal'])){
+        if(isset($_POST['custom_amount_ideal'])){
           $amount = (int)$_POST['custom_amount_ideal'];
         } else {
           $amount = (int)$_POST['button_amount_ideal'];
@@ -131,7 +130,6 @@
 
     public function paypal()
     {
-      print_r($_POST);
       if (isPost()) {
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -142,7 +140,7 @@
         }
 
         $amount = 1;
-        if(!isset($_POST['custom_amount_paypal'])){
+        if(isset($_POST['custom_amount_paypal'])){
           $amount = (int)$_POST['custom_amount_paypal'];
         } else {
           $amount = (int)$_POST['button_amount_paypal'];
@@ -185,21 +183,7 @@
         $this->pageModel->updateStatus($payment_id, $payment->status);
         if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks()) {
           // Donation complete
-          // Create thank you PDF
-          $attachmentLocation = 'pdf/pdf-' . $_SESSION['user_id'] . '-' . bin2hex(random_bytes(8)) . '.pdf';
-          $qrMessage = generateRandomString(10) . '?id=' . $_SESSION['user_id'];
-          createPDFThankYou($_SESSION['user_name'], $qrMessage, $attachmentLocation);
-
-          // Send the confirmation mail with PDF to the user
-          $subject = 'Your donation to CommunityShare';
-          sendEmail($_SESSION['user_email'],
-            GUSER,
-            SITENAME,
-            $subject,
-            'Thank you for your donation to CommunityShare '. $_SESSION['user_name']. '! <br> Your donation will help our free website to continue to thrive :)',
-            $attachmentLocation
-          );
-
+          die('payment complete');
         } elseif ($payment->isOpen()) {
           $this->failedPayment($payment_id);
         } elseif ($payment->isPending()) {
