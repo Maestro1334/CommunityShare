@@ -6,12 +6,12 @@
  * @param $name string name of the donator
  * @param $qrcodeMessage string qr code message
  */
-function createPDFThankYou(string $name, string $qrcodeMessage, string $location){
+function createPDFThankYou($name, $qrcodeMessage, $location){
 
     //// PDF location on server
-  //      $location = 'pdf/pdf-' . $_SESSION['user_id'] . '-' . bin2hex(random_bytes(8)) . '.pdf';
-  //      $qrMessage = 'What a wonderful person you are!';
-  //      createPDFThankYou($_SESSION['user_name'], $qrMessage, $location);
+//        $location = 'pdf/pdf-' . $_SESSION['user_id'] . '-' . bin2hex(random_bytes(8)) . '.pdf';
+//        $qrMessage = 'What a wonderful person you are!';
+//        createPDFThankYou($_SESSION['user_name'], $qrMessage, $location);
 
     $pdf = new FPDF();
     $pdf->AddPage();
@@ -37,4 +37,14 @@ function createPDFThankYou(string $name, string $qrcodeMessage, string $location
     $pdf->Cell(0,10,'mattismeeuwesse@gmail.com', 1, 1, 'C');
 
     $pdf->Output('F', $location);
+}
+
+function generateRandomString($length = 10) {
+  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $charactersLength = strlen($characters);
+  $randomString = '';
+  for ($i = 0; $i < $length; $i++) {
+    $randomString .= $characters[rand(0, $charactersLength - 1)];
+  }
+  return $randomString;
 }

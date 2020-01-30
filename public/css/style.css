@@ -25,5 +25,8 @@
   margin-top: 40px;
 }
 
+#filename {
+  visibility: hidden;
+}
 
 

@@ -225,8 +225,8 @@
                   try {
                     // Send password reset mail
                     sendEmail($data['email'],
-                      'basbrak123@gmail.com',
-                      'CommunityShare',
+                      GUSER,
+                      SITENAME,
                       'Reset password',
                       'Hi, here is a link to reset your password.<br/><a href="' . URLROOT . '/users/resetpass/' . $resetToken . '">Click here</a> to continue.');
                     flash('forgot_password_message', 'A reset password email has been sent');

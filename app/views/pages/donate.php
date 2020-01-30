@@ -5,7 +5,7 @@
     <div class="donate-container">
       <div class="row">
         <div class="col-auto">
-
+          <?php flash('alert'); ?>
           <div class="row" id="donate-block">
             <ul class="nav flex-column nav-pills nav-justified col-3 bg-light" id="v-pills-tab"
                 role="tablist" aria-orientation="vertical">
@@ -26,16 +26,17 @@
                   <div id="ideal-block">
                     <div class="amount-select">
                       <h2 class="amount-select-title">Please choose donation amount</h2>
-                      <div class="btn-group-lg amount-select-buttons" role="group" aria-label="amount-select">
-                        <button type="button" class="btn btn-primary button-amount-select" value="5" onclick="saveButtonAmount(this)">&euro;5,-</button>
-                        <button type="button" class="btn btn-primary button-amount-select" value="10" onclick="saveButtonAmount(this)">&euro;10,-</button>
-                        <button type="button" class="btn btn-primary button-amount-select" value="15" onclick="saveButtonAmount(this)">&euro;15,-</button>
-                        <input name="button_amount" type="hidden" id="button-amount" value="">
+                      <div class="btn-group-lg amount-select-buttons <?php echo (!empty($data['button_amount_err'])) ? 'is-invalid' : ''; ?>" role="group" aria-label="amount-select">
+                        <button type="button" class="btn btn-primary button-amount-select" value="5" onclick="saveButtonAmountIdeal(this)">&euro;5,-</button>
+                        <button type="button" class="btn btn-primary button-amount-select" value="10" onclick="saveButtonAmountIdeal(this)">&euro;10,-</button>
+                        <button type="button" class="btn btn-primary button-amount-select" value="15" onclick="saveButtonAmountIdeal(this)">&euro;15,-</button>
+                        <span class="invalid-feedback"><?php echo $data['button_amount_err']; ?></span>
+                        <input name="button_amount_ideal" type="hidden" id="button-amount-ideal" value="">
                       </div>
                     </div>
                     <div class="form-group custom-amount">
-                      <label for="custom_amount">Enter a custom amount (optional)</label>
-                      <input type="number" min="1" step="any" name="custom_amount" placeholder="Amount in euro's" class="form-control form-control-lg <?php echo (!empty($data['custom_amount_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['custom_amount']; ?>">
+                      <label for="custom_amount_ideal">Enter a custom amount (optional)</label>
+                      <input type="number" min="1" step="any" name="custom_amount_ideal" placeholder="Amount in euro's" class="form-control form-control-lg <?php echo (!empty($data['custom_amount_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['custom_amount']; ?>">
                       <span class="invalid-feedback"><?php echo $data['custom_amount_err']; ?></span>
                     </div>
                     <div class="bank-select-block">
@@ -57,27 +58,28 @@
                   </div>
                 </form>
               </div>
-<!--              <div class="tab-pane fade" id="paypal" role="tabpanel" aria-labelledby="choice-paypal">-->
-<!--                <div id="paypal-block">-->
-<!--                  <div class="amount-select">-->
-<!--                    <h2 class="amount-select-title">Please choose donation amount</h2>-->
-<!--                    <div class="btn-group-lg amount-select-buttons" role="group" aria-label="amount-select">-->
-<!--                      <button type="button" class="btn btn-primary" value="5">&euro;5,-</button>-->
-<!--                      <button type="button" class="btn btn-primary" value="10">&euro;10,-</button>-->
-<!--                      <button type="button" class="btn btn-primary" value="15">&euro;15,-</button>-->
-<!--                      <input type="hidden" id="button-amount" value="">-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                  <div class="form-group custom-amount">-->
-<!--                    <label for="custom-amount">Enter a custom amount (optional)</label>-->
-<!--                    <input type="number" min="1" step="any" name="custom_amount" placeholder="Amount in euro's" class="form-control form-control-lg --><?php //echo (!empty($data['custom_amount_err'])) ? 'is-invalid' : ''; ?><!--" value="--><?php //echo $data['custom_amount']; ?><!--">-->
-<!--                    <span class="invalid-feedback">--><?php //echo $data['custom_amount_err']; ?><!--</span>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <form action="--><?php //echo URLROOT; ?><!--/pages/paypal" method=post>-->
-<!--                  <button type="submit" class="btn button-pay" id="button-pay-paypal">PAY</button>-->
-<!--                </form>-->
-<!--              </div>-->
+              <div class="tab-pane fade" id="paypal" role="tabpanel" aria-labelledby="choice-paypal">
+                <form action="<?php echo URLROOT; ?>/pages/paypal" method=post>
+                  <div id="paypal-block">
+                    <div class="amount-select">
+                      <h2 class="amount-select-title">Please choose donation amount</h2>
+                      <div class="btn-group-lg amount-select-buttons <?php echo (!empty($data['button_amount_err'])) ? 'is-invalid' : ''; ?>" role="group" aria-label="amount-select">
+                        <button type="button" class="btn btn-primary button-amount-select" value="5" onclick="saveButtonAmountPayPal(this)">&euro;5,-</button>
+                        <button type="button" class="btn btn-primary button-amount-select" value="10" onclick="saveButtonAmountPayPal(this)">&euro;10,-</button>
+                        <button type="button" class="btn btn-primary button-amount-select" value="15" onclick="saveButtonAmountPayPal(this)">&euro;15,-</button>
+                        <span class="invalid-feedback"><?php echo $data['button_amount_err']; ?></span>
+                        <input name="button_amount_paypal" type="hidden" id="button-amount-paypal" value="">
+                      </div>
+                    </div>
+                    <div class="form-group custom-amount">
+                      <label for="custom_amount_paypal">Enter a custom amount (optional)</label>
+                      <input type="number" min="1" step="any" name="custom_amount_paypal" placeholder="Amount in euro's" class="form-control form-control-lg <?php echo (!empty($data['custom_amount_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['custom_amount']; ?>">
+                      <span class="invalid-feedback"><?php echo $data['custom_amount_err']; ?></span>
+                    </div>
+                    <button type="submit" class="btn button-pay" id="button-pay-paypal">Donate</button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

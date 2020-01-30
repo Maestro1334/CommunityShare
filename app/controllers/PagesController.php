@@ -1,9 +1,11 @@
 <?php
   class PagesController extends Controller {
     private $pageModel;
+    private $dataModel;
 
     public function __construct(){
       $this->pageModel = $this->model('PageModel');
+      $this->dataModel= $this->model('DataModel');
     }
     
     public function index(){
@@ -86,15 +88,21 @@
 
     public function ideal()
     {
+      print_r($_POST);
       if (isPost()) {
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
+        if(empty($_POST['custom_amount_ideal']) && empty($_POST['button_amount_ideal'])) {
+          flash('alert', 'Please select an amount to donate');
+          redirect('pages/donate');
+        }
+
         $amount = 1;
-        if(!isset($_POST['custom_amount'])){
-          $amount = (int)$_POST['custom_amount'];
+        if(!isset($_POST['custom_amount_ideal'])){
+          $amount = (int)$_POST['custom_amount_ideal'];
         } else {
-          $amount = (int)$_POST['button_amount'];
+          $amount = (int)$_POST['button_amount_ideal'];
         }
 
         try {
@@ -107,7 +115,7 @@
         try {
           $data = [
             'method' => \Mollie\Api\Types\PaymentMethod::IDEAL,
-            'description' => "CommunityShare donation #{$payment_id}",
+            'description' => "CommunityShare ideal donation #{$payment_id}",
             'id' => $payment_id,
             "issuer" => !empty($_POST["issuer"]) ? $_POST["issuer"] : null,
             'amount' => $amount
@@ -123,30 +131,45 @@
 
     public function paypal()
     {
-      // Perform pre payment checks
-      $this->beforePaymentChecks();
+      print_r($_POST);
+      if (isPost()) {
+        // Sanitize POST array
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-      try {
-        // Insert the order in the database and create a invoice PDF
-        $payment_id = $this->createOrder(3);
-      } catch (Exception $e) {
-        flash('alert', 'Sorry, your order could not be created at this time. Try again in a couple of minutes.', 'alert');
-        redirect('checkout');
-      }
+        if(empty($_POST['custom_amount_paypal']) && empty($_POST['button_amount_paypal'])) {
+          flash('alert', 'Please select an amount to donate');
+          redirect('pages/donate');
+        }
 
-      // Create mollie payment
-      try {
-        $data = [
-          'method' => \Mollie\Api\Types\PaymentMethod::PAYPAL,
-          'description' => "Haarlem Festival Paypal Order #" . $payment_id,
-          'id' => $payment_id,
-          "issuer" => null
-        ];
-        $this->pay($data);
-      } catch (IncompatiblePlatform $e) {
-        echo "Incompatible platform: " . $e->getMessage();
-      } catch (ApiException $e) {
-        echo "API call failed: " . \htmlspecialchars($e->getMessage());
+        $amount = 1;
+        if(!isset($_POST['custom_amount_paypal'])){
+          $amount = (int)$_POST['custom_amount_paypal'];
+        } else {
+          $amount = (int)$_POST['button_amount_paypal'];
+        }
+
+        try {
+          // Insert the order in the database and create a invoice PDF
+          $payment_id = $this->createOrder($amount);
+        } catch (Exception $e) {
+          echo "Creating order failed: ". $e->getMessage();
+        }
+
+        // Create mollie payment
+        try {
+          $data = [
+            'method' => \Mollie\Api\Types\PaymentMethod::PAYPAL,
+            'description' => "CommunityShare paypal donation #" . $payment_id,
+            'id' => $payment_id,
+            "issuer" => !empty($_POST["issuer"]) ? $_POST["issuer"] : null,
+            'amount' => $amount
+          ];
+          $this->pay($data);
+        } catch (IncompatiblePlatform $e) {
+          echo "Incompatible platform: " . $e->getMessage();
+        } catch (ApiException $e) {
+          echo "API call failed: " . \htmlspecialchars($e->getMessage());
+        }
       }
     }
 
@@ -161,11 +184,21 @@
         // Update order status
         $this->pageModel->updateStatus($payment_id, $payment->status);
         if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks()) {
+          // Donation complete
           // Create thank you PDF
-          /////
+          $attachmentLocation = 'pdf/pdf-' . $_SESSION['user_id'] . '-' . bin2hex(random_bytes(8)) . '.pdf';
+          $qrMessage = generateRandomString(10) . '?id=' . $_SESSION['user_id'];
+          createPDFThankYou($_SESSION['user_name'], $qrMessage, $attachmentLocation);
 
           // Send the confirmation mail with PDF to the user
-          ///////
+          $subject = 'Your donation to CommunityShare';
+          sendEmail($_SESSION['user_email'],
+            GUSER,
+            SITENAME,
+            $subject,
+            'Thank you for your donation to CommunityShare '. $_SESSION['user_name']. '! <br> Your donation will help our free website to continue to thrive :)',
+            $attachmentLocation
+          );
 
         } elseif ($payment->isOpen()) {
           $this->failedPayment($payment_id);
@@ -192,6 +225,13 @@
     private function failedPayment($payment_id)
     {
       // Send payment failed email
+      $subject = 'Something went wrong with your donation to CommunityShare';
+      sendEmail($_SESSION['user_email'],
+        GUSER,
+        SITENAME,
+        $subject,
+        'Something went wrong processing your donation to CommunityShare '. $_SESSION['user_name']. '! <br> Please try again or contact me at mattismeeuwesse@gmail.com if you need any help! <br> If you cancelled your transaction on purpose, you can ignore this email.'
+      );
     }
 
     // Load order complete page
@@ -199,5 +239,78 @@
     {
       // Require 'order complete' view php file
       $this->view('pages/complete');
+    }
+
+
+    public function data() {
+      if(isLoggedIn()){
+        $data = $this->dataModel->getAllInformation();
+
+        $this->view('pages/data', $data);
+      } else {
+        redirect('users/login');
+      }
+    }
+
+    public function import()
+    {
+      if (isPost()) {
+        $this->dataModel->clearCSV();
+        // Get file name
+        $filename = $_FILES["filename"]["tmp_name"];
+
+        // Check if the file is a CVS
+        $cvs = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
+        if (in_array($_FILES['filename']['type'], $cvs)){
+          // Check if file size is bigger than 0
+          if ($_FILES["filename"]["size"] > 0)
+          {
+            // Open file in read mode
+            $file = fopen($filename, "r");
+
+            // While there is data in the file upload the data to the database
+            while (($readData = fgetcsv($file, 10000, ",")) !== FALSE)
+            {
+              $this->dataModel->importCVS($readData[0], $readData[1]);
+            }
+            fclose($file);
+
+            flash('alert', 'Importing successful');
+            redirect('pages/data');
+          } else {
+            flash('alert', 'File does not contain any data');
+            redirect('pages/data');
+          }
+        } else {
+          flash('alert', 'Sorry, only cvs file format is allowed');
+          redirect('pages/data');
+        }
+      }
+      else {
+        redirect('pages/data');
+      }
+    }
+
+    public function export()
+    {
+      if (isPost()) {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=data.csv');
+
+        $output = fopen('php://output', 'w+');
+        $information = $this->dataModel->getAllInformation();
+
+        foreach($information as $info){
+          $row['name'] = $info->name;
+          $row['data'] = $info->data;
+
+          fputcsv($output, $row);
+        }
+
+        fclose($output);
+      }
+      else {
+        redirect('pages/data');
+      }
     }
   }

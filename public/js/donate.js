@@ -1,4 +1,9 @@
-// on click of + or - button check for availability and disable button if value is greater
-function saveButtonAmount(ele) {
-  document.getElementById("button-amount").value = ele.value;
+// On click of ideal button save the button value to hidden input
+function saveButtonAmountIdeal(ele) {
+  document.getElementById("button-amount-ideal").value = ele.value;
+}
+
+// On click of paypal button save the button value to hidden input
+function saveButtonAmountPayPal(ele) {
+  document.getElementById("button-amount-paypal").value = ele.value;
 }
