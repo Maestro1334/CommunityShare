@@ -115,7 +115,7 @@
         try {
           $data = [
             'method' => \Mollie\Api\Types\PaymentMethod::IDEAL,
-            'description' => "CommunityShare ideal donation #{$payment_id}",
+            'description' => "CommunityShare iDeal donation #{$payment_id}",
             'id' => $payment_id,
             "issuer" => !empty($_POST["issuer"]) ? $_POST["issuer"] : null,
             'amount' => $amount
