@@ -1,0 +1,19 @@
+#toTopButton {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 175px;
+  z-index: 99;
+  border: none;
+  outline: none;
+  background-color: #0076eb;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+#toTopButton:hover {
+  background-color: #555; /* Add a dark-grey background on hover */
+}

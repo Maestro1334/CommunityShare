@@ -1,5 +1,8 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
+<link rel="stylesheet" href="<?php echo URLROOT; ?>/css/posts.css">
+
 <?php flash('post_message'); ?>
+
 <div class="row mb-3">
   <div class="col-md-6">
     <h1>Posts</h1>
@@ -29,6 +32,7 @@
     </div>
   </div>
 </div>
+  <button onclick="goToTop()" id="toTopButton" title="Go to top">Go to top</button>
 <?php foreach ($data['posts'] as $post) :
   $images = explode(',', $post->filenames); ?>
   <div class="card card-body mb-3">
@@ -44,4 +48,5 @@
     <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $post->postId; ?>" class="btn btn-dark">More</a>
   </div>
 <?php endforeach; ?>
+<script type = "text/javascript" src ="<?php echo URLROOT; ?>/js/posts.js"></script>
 <?php require APPROOT . '/views/inc/footer.php'; ?>
