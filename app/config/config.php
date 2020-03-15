@@ -15,7 +15,7 @@
   define('SITENAME', 'CommunityShare');
 
   // App Version
-  define('APPVERSION', '1.5.0');
+  define('APPVERSION', '2.0');
 
   // File upload
   define('FILE_UPLOAD', 'img/uploads/');
